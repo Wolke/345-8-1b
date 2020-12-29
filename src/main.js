@@ -24,10 +24,36 @@ var query = async (q) => {
   console.log(c.value);
   return c.value;
 };
+var teach = async (text) => {
+  let a = text.split("教");
+  a = a[1].split("說");
+  let input = a[0];
+  let output = a[1];
+  let sheet = await loadSheet();
+  let c = await query(input);
+  console.log(c);
+  if (typeof c === "string") {
+    //update
+    await sheet.loadCells("C1:C2");
+    let cell = sheet.getCell(0, 2);
+    cell.formula = `=MATCH("${input}",A:A,0)`;
+    await sheet.saveUpdatedCells();
+    await sheet.loadCells("C1:C2");
+    cell = sheet.getCell(0, 2);
+    console.log(cell.value);
+    await sheet.loadCells(`A1:B10`);
+    let c2 = sheet.getCell(cell.value - 1, 1);
+    c2.value = output;
+    await sheet.saveUpdatedCells();
+  } else {
+    //insert
+    await sheet.addRow({ input, output });
+  }
+};
 
 async function handle(text) {
   if (text.indexOf("教") > -1 && text.indexOf("說") > -1) {
-    // teach(text)
+    teach(text);
     return "我會了";
   }
   let s = await query(text);
