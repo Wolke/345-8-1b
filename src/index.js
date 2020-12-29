@@ -49,8 +49,8 @@ async function handleEvent(event) {
   }
 
   // create a echoing text message
-  const echo = { type: "text", text: await handle(event.message.text) };
-  // const echo = await handle(event.message.text);
+  // const echo = { type: "text", text: await handle(event.message.text) };
+  const echo = await handle(event.message.text);
   // console.log(echo);
 
   // use reply API
